@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+    // Install the Jenkins tools you need for your project / environment
+    tools {
+        nodejs 'nodeInstallationName' // Refers to a global tool configuration for nodejs called 'nodeInstallationName' 
+    }
+
+    stages {
+        stage('Initialize & Cleanup Workspace') {
+            steps {
+               echo 'Initialize & Cleanup Workspace'
+               sh 'ls -la'
+               sh 'rm -rf *'
+               sh 'rm -rf .git'
+               sh 'rm -rf .gitignore'
+               sh 'ls -la'
+            }
+        }
+
+        stage('Git Clone') {
+            steps {
+                // Clone the repo that is going to be built
+                git url: 'https://github.com/dani-kline/goof.git'
+                sh 'ls -la'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Install dependencies and run the build. 
+                // To run snyk-filter in Jenkins, it is necessary to use the Snyk CLI insted of the Jenkins Snyk plugin so we will install it here.
+                // To run the Snyk CLI and snyk-filter, you would install the CLI, node-jq, and snyk-filter as shown below
+                sh 'npm install -g snyk'
+                sh 'npm install -g node-jq'
+                sh 'npm install -g snyk-filter'
+                // browserify is a dependency for the project I'm building in this walkthrough. 
+                sh 'npm install browserify'
+                // this is the node command for starting the build
+                sh 'npm run build'
+            }
+        }
+
+        stage('Snyk Test using Snyk CLI') {
+            // Run snyk test to check for vulnerabilities and fail the build if any are found
+            steps {
+                // If not running snyk-filter, using the Jenkins plugin (shown here) is recommended for ease of use. 
+                snykSecurity(
+                    snykInstallation: 'snykInstallationName', // Refers to the global tool configuration for Snyk called 'snykInstallationName'
+                    snykTokenId: 'snykTokenId', // Refers to the ID of the Snyk API Token Credential
+                    // If monitoring this build in the Snyk UI, organisation refers to the OrgId for the Snyk org it will be monitored in.
+                    // The orgId can be found in the settings for the org in the Snyk UI. The Token used must have permissions for the organization.
+                    // Optional: If testing and NOT monitoring, you can remove or comment out (including the two slashes before) organisation. 
+                    organisation: 'orgId',
+                    projectName: 'jenkins-pipeline-walkthrough', // This creates a custom name for the project when monitored in Snyk UI. Optional.
+                    // monitorProjectOnBuild: false, // This is optional, and without this parameter, the project will be monitored. 
+                    //failOnIssues is optional and without this parameter, the build will fail if there are issues. Use is for testing without blocking. 
+                    failOnIssues: 'false',
+                    // place other parameters here (see here: https://plugins.jenkins.io/snyk-security-scanner/#plugin-content-pipeline-projects)
+                )
+            }
+        }
+    }
+}
