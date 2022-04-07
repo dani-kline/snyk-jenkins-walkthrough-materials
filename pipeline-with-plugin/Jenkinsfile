@@ -35,7 +35,7 @@ pipeline {
             }
         }
 
-        stage('Snyk Test using Snyk CLI') {
+        stage('Snyk Test using plugin') {
             // Run snyk test to check for vulnerabilities and fail the build if any are found
             steps {
                 snykSecurity(
