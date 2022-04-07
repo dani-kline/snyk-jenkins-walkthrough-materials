@@ -46,7 +46,7 @@ pipeline {
           steps {
             // Jenkins does not have a credential binding for Snyk Tokens. I added a new secret text credential with the Snyk API token as the secret.
             // The value of credentialsId is the ID of the secret text credential, and the variable value should be SNYK_TOKEN as it is below.
-              // I plan on asking about the security of using this as an alternative to the token or hardcoding it as an environmental variable.
+              // I plan on asking about the security ramifications of using this as an alternative to the token or hardcoding it as an environmental variable.
             withCredentials([string(credentialsId:'credentialId', variable: 'SNYK_TOKEN')]) {
               // Run a snyk test with snyk filter. The filter is included in the repo for this build and the path to it is specified.
                 // Pipe the filtered results into snyk-to-html to generate a report
