@@ -28,11 +28,6 @@ pipeline {
         stage('Build') {
             steps {
                 // Install dependencies and run the build. 
-                // To run snyk-filter in Jenkins, it is necessary to use the Snyk CLI insted of the Jenkins Snyk plugin so we will install it here.
-                // To run the Snyk CLI and snyk-filter, you would install the CLI, node-jq, and snyk-filter as shown below
-                sh 'npm install -g snyk'
-                sh 'npm install -g node-jq'
-                sh 'npm install -g snyk-filter'
                 // browserify is a dependency for the project I'm building in this walkthrough. 
                 sh 'npm install browserify'
                 // this is the node command for starting the build
@@ -43,16 +38,14 @@ pipeline {
         stage('Snyk Test using Snyk CLI') {
             // Run snyk test to check for vulnerabilities and fail the build if any are found
             steps {
-                // If not running snyk-filter, using the Jenkins plugin (shown here) is recommended for ease of use. 
                 snykSecurity(
                     snykInstallation: 'snykInstallationName', // Refers to the global tool configuration for Snyk called 'snykInstallationName'
                     snykTokenId: 'snykTokenId', // Refers to the ID of the Snyk API Token Credential
                     // If monitoring this build in the Snyk UI, organisation refers to the OrgId for the Snyk org it will be monitored in.
                     // The orgId can be found in the settings for the org in the Snyk UI. The Token used must have permissions for the organization.
-                    // Optional: If testing and NOT monitoring, you can remove or comment out (including the two slashes before) organisation. 
-                    organisation: 'orgId',
+                    organisation: 'orgId', // Optional if testing and NOT monitoring. 
                     projectName: 'jenkins-pipeline-walkthrough', // This creates a custom name for the project when monitored in Snyk UI. Optional.
-                    // monitorProjectOnBuild: false, // This is optional, and without this parameter, the project will be monitored. 
+                    monitorProjectOnBuild: false, // This is optional, and without this parameter, the project will be monitored. 
                     failOnIssues: 'false', // optional, without this parameter, build fails if issues. One use is testing without blocking.
                     // place other parameters here (see here: https://plugins.jenkins.io/snyk-security-scanner/#plugin-content-pipeline-projects)
                 )
