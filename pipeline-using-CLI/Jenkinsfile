@@ -33,6 +33,7 @@ pipeline {
                 sh 'npm install -g snyk'
                 sh 'npm install -g node-jq'
                 sh 'npm install -g snyk-filter'
+                sh 'npm install -g snyk-to-html'
                 // browserify is a dependency for the project I'm building in this walkthrough. 
                 sh 'npm install browserify'
                 // this is the node command for starting the build
