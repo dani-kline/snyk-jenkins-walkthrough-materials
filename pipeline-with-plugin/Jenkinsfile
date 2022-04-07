@@ -53,8 +53,7 @@ pipeline {
                     organisation: 'orgId',
                     projectName: 'jenkins-pipeline-walkthrough', // This creates a custom name for the project when monitored in Snyk UI. Optional.
                     // monitorProjectOnBuild: false, // This is optional, and without this parameter, the project will be monitored. 
-                    //failOnIssues is optional and without this parameter, the build will fail if there are issues. Use is for testing without blocking. 
-                    failOnIssues: 'false',
+                    failOnIssues: 'false', // optional, without this parameter, build fails if issues. One use is testing without blocking.
                     // place other parameters here (see here: https://plugins.jenkins.io/snyk-security-scanner/#plugin-content-pipeline-projects)
                 )
             }
