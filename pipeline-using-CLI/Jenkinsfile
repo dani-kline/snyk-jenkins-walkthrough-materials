@@ -44,8 +44,8 @@ pipeline {
             // Run snyk test to check for vulnerabilities and fail the build if any are found
           steps {
             // Jenkins does not have a credential binding for Snyk Tokens. I added a new secret text credential with the Snyk API token as the secret.
-            // The ID for that credential is the value of credentialsId, and the variable value should be SNYK_TOKEN as it is below. 
-            withCredentials([string(credentialsId:'snyktestapitoken', variable: 'SNYK_TOKEN')]) {
+            // The value of credentialsId is the ID of the secret text credential, and the variable value should be SNYK_TOKEN as it is below. 
+            withCredentials([string(credentialsId:'credentialId', variable: 'SNYK_TOKEN')]) {
               // This runs a snyk test with snyk filter. The filter is included in the repo for this build and I specified the path to it. 
               sh 'snyk test --json | snyk-filter -f snyk-filter/exploitable_cvss_9.yml'
                }
