@@ -28,8 +28,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Install dependencies and run the build. 
-                // To run snyk-filter in Jenkins, it is necessary to use the Snyk CLI insted of the Jenkins Snyk plugin so we will install it here.
-                // To run the Snyk CLI and snyk-filter, you would install the CLI, node-jq, and snyk-filter as shown below
+                // To run the Snyk CLI, snyk-filter, and snyk-to-html you would install the CLI, node-jq, and snyk-filter as shown below
                 sh 'npm install -g snyk'
                 sh 'npm install -g node-jq'
                 sh 'npm install -g snyk-filter'
@@ -48,8 +47,8 @@ pipeline {
             // The value of credentialsId is the ID of the secret text credential, and the variable value should be SNYK_TOKEN as it is below.
               // I plan on asking about the security ramifications of using this as an alternative to the token or hardcoding it as an environmental variable.
             withCredentials([string(credentialsId:'credentialId', variable: 'SNYK_TOKEN')]) {
-              // Run a snyk test with snyk filter. The filter is included in the repo for this build and the path to it is specified.
-                // Pipe the filtered results into snyk-to-html to generate a report
+              // Run a snyk test with snyk filter. The filter is included in the repo for this build and the path to it is specified after -f.
+                // Pipe the filtered results into snyk-to-html to generate a report with the filtered results.
                 // The build will not break even if the Snyk Test fails. Is this expected behavior?
               sh 'snyk test --json | snyk-filter -f snyk-filter/exploitable_cvss_9.yml --json | snyk-to-html -o results.html'
                }
