@@ -49,7 +49,7 @@ pipeline {
                     additionalArguments: '--json-file-output=vuln.json' //this outputs the results into a JSON named vuln.json in the workspace directory
                     // place other applicable parameters here (see here: https://plugins.jenkins.io/snyk-security-scanner/#plugin-content-pipeline-projects)
                 )
-                // Run snyk-filter, getting it's input (vuln.json) and using the filter that's in the repo.
+                // Run snyk-filter, getting its input (vuln.json) and using the filter that's in the repo.
                 sh 'snyk-filter -i vuln.json -f snyk-filter/exploitable_cvss_9.yml'
             }
         }
