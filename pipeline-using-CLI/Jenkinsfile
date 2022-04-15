@@ -28,7 +28,7 @@ pipeline {
         stage('Build') {
             steps {
                 // Install dependencies and run the build. 
-                // To run the Snyk CLI, snyk-filter, and snyk-to-html you would install the CLI, node-jq, and snyk-filter as shown below
+                // To run the Snyk CLI, snyk-filter, and snyk-to-html you would install the CLI, node-jq, snyk-to-html and snyk-filter as shown below
                 sh 'npm install -g snyk'
                 sh 'npm install -g node-jq'
                 sh 'npm install -g snyk-filter'
