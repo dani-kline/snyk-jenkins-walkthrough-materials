@@ -44,12 +44,12 @@ pipeline {
                 snykSecurity(
                     snykInstallation: 'snykInstallationName', // Refers to the global tool configuration for Snyk called 'snykInstallationName'
                     snykTokenId: 'snykTokenId', // Refers to the ID of the Snyk API Token Credential.
-                    monitorProjectOnBuild: false, // snyk-filter is not supported with monitor, so this will monitor the results pre-filter when this is set to true or this line isn't present. 
+                    monitorProjectOnBuild: false, // snyk-filter is not supported with monitor, so this should be set to false.
                     failOnIssues: 'false', // if the build fails in the snykSecurity step, snyk-filter will not run, which is why failOnIssues is set to false.
                     additionalArguments: '--json-file-output=vuln.json' //this outputs the results into a JSON named vuln.json in the workspace directory
                     // place other applicable parameters here (see here: https://plugins.jenkins.io/snyk-security-scanner/#plugin-content-pipeline-projects)
                 )
-                // Run snyk-filter, getting its input (vuln.json) and using the filter that's in the repo.
+                // Run snyk-filter, using the vuln.json created in the snykSecurity step the filter which is located in the project repo.
                 sh 'snyk-filter -i vuln.json -f snyk-filter/exploitable_cvss_9.yml'
             }
         }
